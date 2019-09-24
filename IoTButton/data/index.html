@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IoT Workshop</title>
+    
+    <meta content='width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0' name='viewport'>
+ 
+</head>
+
+<style>
+.login100-form-btn {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  min-width: 160px;
+  height: 50px;
+  background-color: #57b846;
+  border-radius: 25px;
+
+  font-family: sans-serif;
+  font-size: 20px;
+  color: #fff;
+  line-height: 1.2;
+
+  -webkit-transition: all 0.4s;
+  -o-transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  transition: all 0.4s;
+}
+
+.login100-form-btn:hover {
+  background-color: #333333;
+}
+
+.limiter {
+  width: 100%;
+  margin: 0 auto;
+}
+
+.container-login100 {
+  width: 100%;  
+  min-height: 100vh;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: #ebeeef;
+}
+
+
+.wrap-login100 {
+  width: 500px;
+  background: #fff;
+  border-radius: 30px;
+  overflow: hidden;
+  position: relative;
+}
+
+/*==================================================================
+[ Title form ]*/
+.login100-form-title {
+  width: 100%;
+  position: relative;
+  z-index: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  align-items: center;
+
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+
+  padding: 5px 15px 20px 15px;
+}
+
+.login100-form-title-1 {
+  font-family: Poppins-Bold;
+  font-size: 30px;
+  color: #fff;
+  font-weight: bold;
+  line-height: 1.2;
+  text-align: center;
+}
+
+.login100-form-title::before {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background-color: #2F4F4F;
+}
+
+/* The container */
+.container {
+    display: inline;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #D3D3D3;
+    border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+    background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: relative;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+.form-style-10 .section{
+    font: normal 20px 'Bitter', serif;
+    color: #2A88AD;
+    margin-bottom: 5px;
+}
+.form-style-10 .section span {
+    background: #2A88AD;
+    padding: 5px 10px 5px 10px;
+    position: absolute;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border: 4px solid #fff;
+    font-size: 14px;
+    margin-left: -45px;
+    color: #fff;
+    margin-top: -3px;
+}
+
+.form-style-10 .inner-wrap{
+    padding: 30px;
+    background: #F8F8F8;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+input[type=text], select {
+    width: 50%;
+    padding: 5px 5px;
+    margin: 8px 0;
+    display: inline-block;
+    border: 2px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+
+</style>
+
+<script>
+window.onload=function() {
+
+  // first, disable all the input fields
+  document.forms[0].elements["authToken"].disabled=true;
+  document.forms[0].elements["event_name"].disabled=true;
+  document.forms[0].elements["key"].disabled=true;
+
+ 
+}
+var rainbowEnable = false;
+var connection = new WebSocket('ws://'+location.hostname+':81/', ['arduino']);
+connection.onopen = function () {
+    connection.send('Connect ' + new Date());
+};
+connection.onerror = function (error) {
+    console.log('WebSocket Error ', error);
+};
+connection.onmessage = function (e) {  
+    console.log('Server: ', e.data);
+};
+connection.onclose = function(){
+    console.log('WebSocket connection closed');
+};
+
+
+function show1(){
+  document.forms[0].elements["authToken"].disabled=true;
+  document.forms[0].elements["event_name"].disabled=false;
+  document.forms[0].elements["key"].disabled=false;  
+  document.getElementById('div1').style.display ='none';
+  document.getElementById('div2').style.display ='block';
+}
+function show2(){
+  document.forms[0].elements["authToken"].disabled=false;
+  document.forms[0].elements["event_name"].disabled=true;
+  document.forms[0].elements["key"].disabled=true;
+  document.getElementById('div1').style.display = 'block';
+  document.getElementById('div2').style.display ='none';
+}
+
+function make_json(form){
+  var json={
+    "WiFi_SSID":form.ssid.value,
+    "WiFi_Password":form.password.value,
+    "platform":form.iot_platform.value,
+    "Auth_Token":form.AuthToken.value,
+    "Event_Name":form.Event_Name.value,
+        "Ifttt_Key":form.IFTTT_Key.value
+  };
+  var html=JSON.stringify(json,0,4);
+  
+    //document.getElementById('output').innerHTML=html;
+    //console.log('JSON DATA: ' + html); 
+    connection.send(html);
+
+    return false;
+
+   
+}
+
+
+
+
+</script>
+<body>
+    <center>
+
+     <div class="limiter">
+    <div class="container-login100">
+      <!--<div class="wrap-login100">   
+      <div class="login100-form-title" > 
+      <a href="https://curiositygym.com/">      <img src="download.png" alt="CuriosityGym Logo" style="width:200px;height:70px;margin-left:0px;"></a>
+          
+          <span class="login100-form-title-1">
+             IoT Workshop
+          </span>
+        </div>-->
+        <form class="login100-form validate-form" onsubmit="return make_json(this);">
+
+     <h3 style="color:#00008B; font-size:23px">WiFi Credentials</h3> 
+    <span style="color:#6A5ACD; font-size:19px">WiFi SSID: </sapn><input type="text" name="ssid"/><br/>
+     <span style="color:#6A5ACD; font-size:19px">Password: <input type="password" name="password"/></span><br/>
+    <h3 for="check" style="color:#00008B; font-size:23px">Select IoT Platform</h3>
+    <label class="container"> <input id="ifttt" type="radio" name="iot_platform" value="I" onclick="show1();"/>IFTTT<span class="checkmark"></span>
+      </label> <label class="container"><input id="blynk" type="radio" name="iot_platform" value="B" onclick="show2();"/>Blynk<span class="checkmark"></span>
+      </label>
+    
+
+    <div id="div1" class="hide">
+        <h3 style="color:#00008B; font-size:23px">Enter your Blynk Auth Token</h3>
+       <span style="color:#6A5ACD; font-size:19px">Auth Token: <input id="authToken" type="text" placeholder="Auth Token" name="AuthToken"></span>
+    </div>
+    <div id="div2" class="hide">
+    <h3 style="color:#00008B; font-size:23px">Enter your IFTTT credentials</h3>
+    <span style="color:#6A5ACD; font-size:19px">Event Name:<input id="event_name" type="text" placeholder="Event Name" name="Event_Name"></span><br>
+    <span style="color:#6A5ACD; font-size:19px">IFTTT Key: <input  id="key" type="text"placeholder="Ifttt key" name="IFTTT_Key"></span>
+    <br>
+    </div>
+   
+    <input class="login100-form-btn" style="margin:8px 0px" "background-color:#999" id="submit-btn" type="submit" value="Submit" />
+
+</form>
+</div>
+</div>
+</div>
+ 
+<pre id="output">
+     Fill the above form
+</pre>
+<!--<h3><a href="https://github.com/CuriosityGym/Web_Page_Interface_IoT_Workshop/wiki"> Documentation</a></h3>  -->
+    </center>
+ 
+</body>
+</html>
+
